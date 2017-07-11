@@ -3,7 +3,7 @@ language: go
 go:
   - 1.x
 
-script: go build ./nplh.go
+script: ./build.sh
 
 deploy:
   provider: releases
