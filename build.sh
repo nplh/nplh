@@ -1,3 +1,5 @@
+apk update
+apk upgrade
 apk add git
 go get
 go build ./nplh.go
