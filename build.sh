@@ -14,7 +14,6 @@ if git describe --exact-match HEAD; then
   release_binary="$(curl \
     --request POST \
     --header "PRIVATE-TOKEN: $APIKEY" \
-    --header "Content-Type: application/json"
     --form "file=@build/nplh" \
     https://gitlab.com/api/v3/projects/nplh%2Fnplh/uploads | \
     jq -r '.markdown')"
@@ -24,6 +23,7 @@ if git describe --exact-match HEAD; then
   curl \
     --request POST \
     --header "PRIVATE-TOKEN: $APIKEY" \
+    --header "Content-Type: application/json" \
     --data "{'description': $release_binary}" \
     https://gitlab.com/api/v3/projects/nplh%2Fnplh/repository/tags/$version/release
 
