@@ -77,7 +77,7 @@ func main() {
 	app.Usage = "A quick dotfile linker"
 
 	app.Action = func(c *cli.Context) {
-		fmt.Println("Hello friend!")
+		cli.ShowAppHelp(c)
 	}
 
 	app.Commands = []cli.Command{
