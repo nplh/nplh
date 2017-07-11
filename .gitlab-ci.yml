@@ -1,7 +1,8 @@
 image: dock0/arch
 
 before_script:
-  - sudo pacman -S go
+  - pacman -S go
+
 
 build:
   script: ./build.sh
