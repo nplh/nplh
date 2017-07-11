@@ -1,0 +1,7 @@
+image: base/archlinux
+
+services:
+  - go:latest
+
+build:
+  script: ./build.sh
