@@ -9,7 +9,8 @@ mkdir build
 mv nplh build
 
 if git describe --exact-match HEAD; then
-  echo "Uploading bin"
+  version=$(git describe --exact-match HEAD)
+  echo "Uploading bin for $version"
   release_binary="$(curl \
     --request POST \
     --header "PRIVATE-TOKEN: $APIKEY" \
@@ -18,7 +19,13 @@ if git describe --exact-match HEAD; then
     jq -r '.markdown')"
 
   echo $release_binary
-  echo $release_binary
+
+  curl \
+    --request POST \
+    --header "PRIVATE-TOKEN: $APIKEY" \
+    --data $release_binary \
+    https://gitlab.com/api/v3/projects/nplh%2Fnplh/repository/tags/$version/release | \
+    jq
 else
   echo "Not a tag; not uploading"
 fi
