@@ -1,7 +1,7 @@
 image: dock0/arch
 
-services:
-  - golang:1.8
+before_script:
+  - sudo pacman -S go
 
 build:
   script: ./build.sh
