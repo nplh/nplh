@@ -1,6 +1,6 @@
-apk update
-apk upgrade
-apk add git
+# apk update
+# apk upgrade
+# apk add git curl
 go get
 go build ./nplh.go
 mkdir build
