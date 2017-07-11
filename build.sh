@@ -24,8 +24,8 @@ if git describe --exact-match HEAD; then
     --request POST \
     --header "PRIVATE-TOKEN: $APIKEY" \
     --data $release_binary \
-    https://gitlab.com/api/v3/projects/nplh%2Fnplh/repository/tags/$version/release | \
-    jq
+    https://gitlab.com/api/v3/projects/nplh%2Fnplh/repository/tags/$version/release
+
 else
   echo "Not a tag; not uploading"
 fi
