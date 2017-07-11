@@ -4,7 +4,7 @@ apk update
 apk upgrade
 apk add git curl jq
 go get
-GOARCH=amd64 go build ./nplh.go
+GOOS=linux GOARCH=amd64 go build -tags netgo -installsuffix netgo ./nplh.go
 mkdir build
 mv nplh build
 
