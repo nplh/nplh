@@ -1,4 +1,4 @@
-image: base/archlinux
+image: dock0/arch
 
 services:
   - golang
