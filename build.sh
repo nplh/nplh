@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+apk update
+apk upgrade
+apk add git curl jq
 go get
 go build ./nplh.go
 mkdir build
