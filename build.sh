@@ -23,7 +23,7 @@ if git describe --exact-match HEAD; then
   curl \
     --request POST \
     --header "PRIVATE-TOKEN: $APIKEY" \
-    --data $release_binary \
+    --data {"description": $release_binary} \
     https://gitlab.com/api/v3/projects/nplh%2Fnplh/repository/tags/$version/release
 
 else
