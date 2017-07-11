@@ -4,7 +4,7 @@ apk update
 apk upgrade
 apk add git curl jq
 go get
-go build ./nplh.go
+GOARCH=amd64 go build ./nplh.go
 mkdir build
 mv nplh build
 
