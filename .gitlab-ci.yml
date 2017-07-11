@@ -1,9 +1,4 @@
-image: dock0/arch
-
-before_script:
-  - pacman -S --noconfirm go
-  - go get
-
+image: golang:alpine
 
 build:
   script: ./build.sh
