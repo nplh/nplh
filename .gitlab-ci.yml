@@ -1,7 +1,7 @@
 image: dock0/arch
 
 before_script:
-  - pacman -S go
+  - pacman -S --noconfirm go
 
 
 build:
