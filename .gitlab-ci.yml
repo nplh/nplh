@@ -1,7 +1,7 @@
 image: base/archlinux
 
 services:
-  - golang/latest
+  - golang
 
 build:
   script: ./build.sh
