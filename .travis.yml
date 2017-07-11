@@ -4,3 +4,12 @@ go:
   - 1.x
 
 script: go build ./nplh.go
+
+deploy:
+  provider: releases
+  api-key: $apikey
+  file_glob: true
+  file: build/*
+  skip_cleanup: true
+  on:
+    tags: true
