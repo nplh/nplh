@@ -75,7 +75,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "No Place Like Home"
 	app.Usage = "A quick dotfile linker"
-	app.Version = "0.0.12"
+	app.Version = "0.0.13"
 
 	app.Action = func(c *cli.Context) {
 		cli.ShowAppHelp(c)
