@@ -1,3 +1,4 @@
+apk add git
 go get
 go build ./nplh.go
 mkdir build
