@@ -1,7 +1,7 @@
 image: dock0/arch
 
 services:
-  - golang
+  - golang:1.8
 
 build:
   script: ./build.sh
