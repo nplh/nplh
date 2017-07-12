@@ -10,6 +10,10 @@ redirect() {
 }
 
 latest=$(git describe --abbrev=0)
+
+echo latest
+echo "$latest"
+
 # latest_url="$(curl \
 #   https://gitlab.com/api/v3/projects/nplh%2Fnplh/repository/tags/$latest | \
 #   jq -r ".release.description")"
@@ -22,6 +26,9 @@ latest_url="$(curl \
   tail -n 1 | \
   cut -d \" -f2
 )"
+
+echo latest url
+echo "$latest_url"
 
 redirect /dl "$latest_url"
 
