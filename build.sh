@@ -17,7 +17,7 @@ if git describe --exact-match HEAD; then
     --header "PRIVATE-TOKEN: $APIKEY" \
     --form "file=@build/nplh" \
     https://gitlab.com/api/v3/projects/nplh%2Fnplh/uploads | \
-    jq -r '.markdown')"
+    jq -r '.url')"
 
   echo $release_binary
 
