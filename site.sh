@@ -11,6 +11,7 @@ redirect() {
 
 latest=$(git describe --abbrev=0)
 
+git pull
 git describe
 
 echo latest
