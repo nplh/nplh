@@ -3,9 +3,9 @@
 rm -rf build
 mkdir build
 
-jq --version || apt-get install jq
-
 redirects=""
+
+jq --version || apt-get -y install jq
 
 redirect() {
   redirects=$redirects$1"   "$2$'\n'
