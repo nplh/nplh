@@ -3,6 +3,8 @@
 rm -rf build
 mkdir build
 
+jq --version || sudo apt-get install jq
+
 redirects=""
 
 redirect() {
