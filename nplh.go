@@ -115,7 +115,7 @@ func main() {
 			Action: func(c *cli.Context) {
 				for _, line := range readConfig(configPath) {
 					for _, target := range line.Targets {
-						targetCurrentLink, err := os.Readlink(resolvePath(target))
+						targetCurrentLink, err := filepath.EvalSymlinks(resolvePath(target))
 						absoluteSource := filepath.Join(dotfileDirectory, line.Source)
 						fmt.Println("current", targetCurrentLink)
 						fmt.Println("err", err)
