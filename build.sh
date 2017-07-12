@@ -12,7 +12,7 @@ mv nplh build
 if git describe --exact-match HEAD; then
   version=$(git describe --exact-match HEAD)
   echo "Uploading bin for $version"
-  release_binary="$(curl \
+  release_binary="https://gitlab.com/nplh/nplh$(curl \
     --request POST \
     --header "PRIVATE-TOKEN: $APIKEY" \
     --form "file=@build/nplh" \
