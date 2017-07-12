@@ -117,9 +117,6 @@ func main() {
 					for _, target := range line.Targets {
 						targetCurrentLink, err := filepath.EvalSymlinks(resolvePath(target))
 						absoluteSource := filepath.Join(dotfileDirectory, line.Source)
-						fmt.Println("current", targetCurrentLink)
-						fmt.Println("err", err)
-						fmt.Println("absoluteSource", absoluteSource)
 						if err == nil && targetCurrentLink != absoluteSource {
 							fmt.Println(target + " already exists, not overriding")
 						} else if !fileExists(resolvePath(target)) {
