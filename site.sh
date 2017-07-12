@@ -10,8 +10,11 @@ redirect() {
 }
 
 latest=$(git describe)
+latest_url="$(curl \
+  https://gitlab.com/api/v3/projects/nplh%2Fnplh/repository/tags/$latest | \
+  jq -r ".release.description")"
 
-redirect /dl $latest
+redirect /dl $latest_url
 
 echo "$redirects"
 echo "$redirects" > build/_redirects
