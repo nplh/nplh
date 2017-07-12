@@ -123,6 +123,7 @@ func main() {
 						if err == nil && targetCurrentLink != absoluteSource {
 							fmt.Println(target + " already exists, not overriding")
 						} else if !fileExists(resolvePath(target)) {
+							os.MkdirAll(filepath.Dir(resolvePath(target)), 0777)
 							fmt.Println(absoluteSource + " -> " + target)
 							os.Symlink(absoluteSource, resolvePath(target))
 						}
