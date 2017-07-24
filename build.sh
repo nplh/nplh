@@ -4,7 +4,7 @@
 rm -rf build
 mkdir build
 
-if git describe --exact-match HEAD > /dev/null 2>&1; then
+if git show -s 'HEAD^{commit}' --format='%H' > /dev/null 2>&1; then
   version=$(git describe --exact-match HEAD)
   old_version=$(curl -s https://api.github.com/repos/nplh/nplh/releases/latest | jq -r ".tag_name")
   build_release=true
@@ -12,6 +12,7 @@ if git describe --exact-match HEAD > /dev/null 2>&1; then
   sed -i "s/$old_version/$version/g" install.sh
   git config --global user.email "caleb.eby01@gmail.com"
   git config --global user.name "Travis CI" 
+  git config --global push.default simple
   git remote set-url origin https://calebeby:$apikey@github.com/nplh/nplh.git
   git commit -am "Release $version"
   git push
