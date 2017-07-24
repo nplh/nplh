@@ -67,6 +67,22 @@ func readConfig(path string) (config []Symlink) {
 	return symlinks
 }
 
+func link(configPath string, dotfileDirectory string) {
+	for _, line := range readConfig(configPath) {
+		for _, target := range line.Targets {
+			targetCurrentLink, err := filepath.EvalSymlinks(resolvePath(target))
+			absoluteSource := filepath.Join(dotfileDirectory, line.Source)
+			if err == nil && targetCurrentLink != absoluteSource {
+				fmt.Println(target + " already exists, not overriding")
+			} else if !fileExists(resolvePath(target)) {
+				os.MkdirAll(filepath.Dir(resolvePath(target)), 0777)
+				fmt.Println(absoluteSource + " -> " + target)
+				os.Symlink(absoluteSource, resolvePath(target))
+			}
+		}
+	}
+}
+
 func main() {
 	usr, _ := user.Current()
 	dotfileDirectory := filepath.Join(usr.HomeDir, "dotfiles")
@@ -106,6 +122,21 @@ func main() {
 				cmd.Stdout = os.Stdout
 				cmd.Stderr = os.Stderr
 				cmd.Run()
+				link(configPath, dotfileDirectory)
+			},
+		},
+		{
+			Name:    "update",
+			Aliases: []string{"u"},
+			Usage:   "update your dotfiles repo",
+			Action: func(c *cli.Context) {
+				fmt.Println("Updating... ")
+				cmd := exec.Command("git", "pull")
+				cmd.Dir = dotfileDirectory
+				cmd.Stdout = os.Stdout
+				cmd.Stderr = os.Stderr
+				cmd.Run()
+				link(configPath, dotfileDirectory)
 			},
 		},
 		{
@@ -113,19 +144,7 @@ func main() {
 			Aliases: []string{"l"},
 			Usage:   "link out the files to their corresponding homes",
 			Action: func(c *cli.Context) {
-				for _, line := range readConfig(configPath) {
-					for _, target := range line.Targets {
-						targetCurrentLink, err := filepath.EvalSymlinks(resolvePath(target))
-						absoluteSource := filepath.Join(dotfileDirectory, line.Source)
-						if err == nil && targetCurrentLink != absoluteSource {
-							fmt.Println(target + " already exists, not overriding")
-						} else if !fileExists(resolvePath(target)) {
-							os.MkdirAll(filepath.Dir(resolvePath(target)), 0777)
-							fmt.Println(absoluteSource + " -> " + target)
-							os.Symlink(absoluteSource, resolvePath(target))
-						}
-					}
-				}
+				link(configPath, dotfileDirectory)
 			},
 		},
 	}
