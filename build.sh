@@ -15,7 +15,7 @@ if git describe --exact-match HEAD > /dev/null 2>&1; then
   git config --global push.default simple
   git remote set-url origin https://calebeby:$apikey@github.com/nplh/nplh.git
   git commit -am "Release $version"
-  git push
+  git push origin HEAD:master
 else
   version=$(git describe HEAD)
   build_release=false
