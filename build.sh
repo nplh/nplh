@@ -4,7 +4,7 @@
 rm -rf build
 mkdir build
 
-if git show -s 'HEAD^{commit}' --format='%H' > /dev/null 2>&1; then
+if git describe --exact-match HEAD > /dev/null 2>&1; then
   version=$(git describe --exact-match HEAD)
   old_version=$(curl -s https://api.github.com/repos/nplh/nplh/releases/latest | jq -r ".tag_name")
   build_release=true
