@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# install deps
-go get
-
 # clear build dir
 rm -rf build
 mkdir build
@@ -32,7 +29,7 @@ build() {
     arm=""
     desc="$os-$arch"
   fi
-  filename="build/nplh-$desc"
+  filename="build/nplh-$version-$desc"
 
   echo $filename
 
