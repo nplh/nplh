@@ -1,33 +1,66 @@
 #!/usr/bin/env sh
 
-apk update
-apk upgrade
-apk add git curl jq gcc
+# install deps
 go get
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build ./nplh.go
-file nplh
+
+# clear build dir
+rm -rf build
 mkdir build
-mv nplh build
 
-if git describe --exact-match HEAD; then
+if git describe --exact-match HEAD > /dev/null 2>&1; then
   version=$(git describe --exact-match HEAD)
-  echo "Uploading bin for $version"
-  release_binary="https://gitlab.com/nplh/nplh$(curl \
-    --request POST \
-    --header "PRIVATE-TOKEN: $APIKEY" \
-    --form "file=@build/nplh" \
-    https://gitlab.com/api/v3/projects/nplh%2Fnplh/uploads | \
-    jq -r '.url')"
-
-  echo $release_binary
-
-  curl \
-    --request POST \
-    --header "PRIVATE-TOKEN: $APIKEY" \
-    --header "Content-Type: application/json" \
-    --data "{\"description\": \"$release_binary\"}" \
-    https://gitlab.com/api/v3/projects/nplh%2Fnplh/repository/tags/$version/release
-
+  build_release=true
 else
-  echo "Not a tag; not uploading"
+  version=$(git describe HEAD)
+  build_release=false
+fi
+
+build() {
+  if [ "$1" == "arm" ]; then
+    os=""
+    arch="arm"
+    arm="$2"
+    desc="linux-arm$2"
+  elif [ "$1" == "arm8" ]; then
+    os=""
+    arch="arm64"
+    arm=""
+    desc="linux-arm8"
+  else
+    os=$1
+    arch=$2
+    arm=""
+    desc="$os-$arch"
+  fi
+  filename="build/nplh-$desc"
+
+  echo $filename
+
+  echo "-  compiling"
+  GOOS="$os" GOARCH="$arch" GOARM="$arm" CGO_ENABLED=0 go build -o "$filename"
+
+  if [ "$os" == "windows" ]; then
+    echo "-  zipping"
+    zip -q $filename.zip $filename
+  else
+    echo "-  tarring"
+    tar -czf $filename.tgz $filename
+  fi
+  rm $filename
+}
+
+if [ "$build_release" == true ]; then
+  build linux amd64
+  build linux 386
+
+  build windows amd64
+  build windows 386
+
+  build darwin amd64
+  build darwin 386
+
+  build arm 7
+  build arm8
+else
+  build linux amd64
 fi
