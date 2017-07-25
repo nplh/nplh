@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/urfave/cli"
+	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -53,16 +54,24 @@ func readConfig(path string) (config []Symlink) {
 	if err != nil {
 		fmt.Print(err)
 	}
-	lines := strings.Split(string(b), "\n")
+	m := make(map[string]interface{})
+	yaml.Unmarshal(b, &m)
 	symlinks := []Symlink{}
-	for _, line := range lines {
-		if line != "" {
-			words := strings.Split(line, " ")
-			symlinks = append(symlinks, Symlink{
-				Source:  words[0],
-				Targets: words[1:],
-			})
+	for k, v := range m {
+		targets := []string{}
+		value, ok := v.(string)
+		if ok {
+			targets = []string{value}
+		} else {
+			for _, val := range v.([]interface{}) {
+				targets = append(targets, val.(string))
+			}
 		}
+
+		symlinks = append(symlinks, Symlink{
+			Source:  k,
+			Targets: targets,
+		})
 	}
 	return symlinks
 }
@@ -86,7 +95,7 @@ func link(configPath string, dotfileDirectory string) {
 func main() {
 	usr, _ := user.Current()
 	dotfileDirectory := filepath.Join(usr.HomeDir, "dotfiles")
-	configPath := filepath.Join(dotfileDirectory, "nplh")
+	configPath := filepath.Join(dotfileDirectory, "nplh.yml")
 
 	app := cli.NewApp()
 	app.Name = "No Place Like Home"
