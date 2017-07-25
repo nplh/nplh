@@ -63,8 +63,6 @@ download() {
     return
   fi
   
-  cp $1 nplh
-
   chmod +x nplh
 
   if [ "$(readlink /usr/bin/nplh)" != "$(abspath ~/.nplh/bin/nplh)" ]; then
