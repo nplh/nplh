@@ -102,7 +102,7 @@ func link(configPath string, dotfileDirectory string) {
 				warning(target + " already exists, not overriding")
 			} else if !fileExists(resolvePath(target)) {
 				os.MkdirAll(filepath.Dir(resolvePath(target)), 0777)
-				done(absoluteSource + " -> " + target)
+				done(absoluteSource + " → " + target)
 				os.Symlink(absoluteSource, resolvePath(target))
 			}
 		}
