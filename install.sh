@@ -75,6 +75,8 @@ download() {
 }
 
 archi=$(uname -sm)
+binary_available=1
+binary_error=""
 case "$archi" in
   Darwin\ *64)   download nplh-$version-darwin-${binary_arch:-amd64}.tgz  ;;
   Darwin\ *86)   download nplh-$version-darwin-${binary_arch:-386}.tgz    ;;
