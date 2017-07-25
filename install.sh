@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-version=0.0.29
+version=0.0.30
 
 cd ~
 nplh_base="$(pwd)/.nplh"
