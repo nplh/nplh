@@ -1,4 +1,6 @@
 # No Place Like Home: a quick dotfile linker
+[![codecov](https://codecov.io/gh/nplh/nplh/branch/master/graph/badge.svg)](https://codecov.io/gh/nplh/nplh)
+[![Build Status](https://travis-ci.org/nplh/nplh.svg?branch=master)](https://travis-ci.org/nplh/nplh)
 
 ## Installation
 
