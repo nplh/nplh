@@ -2,7 +2,7 @@
 
 ## Installation
 
-```
+```bash
 bash <(curl nplh.cf/dl)
 ```
 
