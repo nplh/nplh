@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -16,6 +17,22 @@ import (
 func exit(err string) {
 	fmt.Println("Error: " + err)
 	os.Exit(1)
+}
+
+func warning(msg string, a ...interface{}) {
+	red := color.New(color.FgRed).SprintfFunc()
+	fmt.Println(red("✘ "+msg, a...))
+}
+
+func done(msg string) {
+	gray := color.New(color.FgHiBlack).SprintfFunc()
+	green := color.New(color.FgGreen).SprintfFunc()
+	fmt.Println(green("✔") + " " + gray(msg))
+}
+
+func info(msg string, a ...interface{}) {
+	gray := color.New(color.FgHiBlack)
+	gray.Printf(msg+"\n", a...)
 }
 
 func resolvePath(path string) (newpath string) {
@@ -82,14 +99,15 @@ func link(configPath string, dotfileDirectory string) {
 			targetCurrentLink, err := filepath.EvalSymlinks(resolvePath(target))
 			absoluteSource := filepath.Join(dotfileDirectory, line.Source)
 			if err == nil && targetCurrentLink != absoluteSource {
-				fmt.Println(target + " already exists, not overriding")
+				warning(target + " already exists, not overriding")
 			} else if !fileExists(resolvePath(target)) {
 				os.MkdirAll(filepath.Dir(resolvePath(target)), 0777)
-				fmt.Println(absoluteSource + " -> " + target)
+				done(absoluteSource + " -> " + target)
 				os.Symlink(absoluteSource, resolvePath(target))
 			}
 		}
 	}
+	done("Done linking files")
 }
 
 func main() {
