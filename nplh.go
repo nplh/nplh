@@ -6,18 +6,11 @@ import (
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"net/url"
 	"os"
-	"os/exec"
 	"os/user"
 	"path/filepath"
 	"strings"
 )
-
-func exit(err string) {
-	fmt.Println("Error: " + err)
-	os.Exit(1)
-}
 
 func warning(msg string, a ...interface{}) {
 	red := color.New(color.FgRed).SprintfFunc()
@@ -28,11 +21,6 @@ func done(msg string) {
 	gray := color.New(color.FgHiBlack).SprintfFunc()
 	green := color.New(color.FgGreen).SprintfFunc()
 	fmt.Println(green("✔") + " " + gray(msg))
-}
-
-func info(msg string, a ...interface{}) {
-	gray := color.New(color.FgHiBlack)
-	gray.Printf(msg+"\n", a...)
 }
 
 func resolvePath(path string) (newpath string) {
@@ -52,24 +40,15 @@ func fileExists(path string) (exists bool) {
 	return false
 }
 
-func repoUrl(repository string) (repo string) {
-	_, err := url.ParseRequestURI(repository)
-
-	if err == nil {
-		return repository
-	}
-	return "https://github.com/" + repository
-}
-
 type Symlink struct {
 	Source  string
 	Targets []string
 }
 
-func readConfig(path string) (config []Symlink) {
+func readConfig(path string) (config []Symlink, err error) {
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
-		fmt.Print(err)
+		return nil, err
 	}
 	m := make(map[string]interface{})
 	yaml.Unmarshal(b, &m)
@@ -90,11 +69,16 @@ func readConfig(path string) (config []Symlink) {
 			Targets: targets,
 		})
 	}
-	return symlinks
+	return symlinks, nil
 }
 
-func link(configPath string, dotfileDirectory string) {
-	for _, line := range readConfig(configPath) {
+func link(dotfileDirectory string) (err error) {
+	configPath := filepath.Join(dotfileDirectory, "nplh.yml")
+	config, err := readConfig(configPath)
+	if err != nil {
+		return err
+	}
+	for _, line := range config {
 		for _, target := range line.Targets {
 			targetCurrentLink, err := filepath.EvalSymlinks(resolvePath(target))
 			absoluteSource := filepath.Join(dotfileDirectory, line.Source)
@@ -108,73 +92,46 @@ func link(configPath string, dotfileDirectory string) {
 		}
 	}
 	done("Done linking files")
+	return nil
 }
 
-func main() {
+func run(args []string) (err error) {
 	usr, _ := user.Current()
-	dotfileDirectory := filepath.Join(usr.HomeDir, "dotfiles")
-	configPath := filepath.Join(dotfileDirectory, "nplh.yml")
-
 	app := cli.NewApp()
 	app.Name = "No Place Like Home"
 	app.Usage = "A quick dotfile linker"
 	app.Version = "0.2.1"
 
-	app.Action = func(c *cli.Context) {
-		cli.ShowAppHelp(c)
-	}
+	cli.AppHelpTemplate = `
+	NAME:
+		 {{.Name}} - {{.Usage}}
 
-	app.Commands = []cli.Command{
-		{
-			Name:  "init",
-			Usage: "setup a dotfiles directory",
-			Action: func(c *cli.Context) {
-				fmt.Println("init")
-			},
-		},
-		{
-			Name:    "install",
-			Aliases: []string{"i"},
-			Usage:   "install a dotfiles repo",
-			Action: func(c *cli.Context) {
-				if c.Args().Get(0) == "" {
-					exit("Please specify a repository")
-				}
-				repository := repoUrl(c.Args().Get(0))
-				if fileExists(dotfileDirectory) {
-					exit("directory " + dotfileDirectory + " exists")
-				}
-				fmt.Printf("Installing %s\n", repository)
-				cmd := exec.Command("git", "clone", repository, dotfileDirectory)
-				cmd.Stdout = os.Stdout
-				cmd.Stderr = os.Stderr
-				cmd.Run()
-				link(configPath, dotfileDirectory)
-			},
-		},
-		{
-			Name:    "update",
-			Aliases: []string{"u"},
-			Usage:   "update your dotfiles repo",
-			Action: func(c *cli.Context) {
-				fmt.Println("Updating... ")
-				cmd := exec.Command("git", "pull")
-				cmd.Dir = dotfileDirectory
-				cmd.Stdout = os.Stdout
-				cmd.Stderr = os.Stderr
-				cmd.Run()
-				link(configPath, dotfileDirectory)
-			},
-		},
-		{
-			Name:    "link",
-			Aliases: []string{"l"},
-			Usage:   "link out the files to their corresponding homes",
-			Action: func(c *cli.Context) {
-				link(configPath, dotfileDirectory)
-			},
+	USAGE:
+		 nplh [options]
+
+	OPTIONS:
+		 {{range .VisibleFlags}}{{.}}
+		 {{end}}
+	VERSION:
+		 {{.Version}}
+`
+
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "directory, d",
+			Value: filepath.Join(usr.HomeDir, "dotfiles"),
+			Usage: "your dotfiles directory",
 		},
 	}
 
-	app.Run(os.Args)
+	app.Action = func(c *cli.Context) (err error) {
+		dotfileDirectory := c.String("directory")
+		return link(dotfileDirectory)
+	}
+
+	return app.Run(args)
+}
+
+func main() {
+	run(os.Args)
 }

@@ -58,6 +58,4 @@ if [ "$build_release" == true ]; then
 
   build arm 7
   build arm8
-else
-  build linux amd64
 fi

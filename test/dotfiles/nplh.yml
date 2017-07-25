@@ -1,0 +1,4 @@
+vimrc:
+  - .vimrc
+  - other-vimrc
+zshrc: .zshrc

@@ -12,7 +12,7 @@ bash <(curl nplh.cf/dl)
 
 1. `nplh install yourusername/yourdotfiles` will install your dotfiles to ~/dotfiles
 2. Setup your `~/dotfiles/nplh.yml`, as seen in [Configuration](#configuration)
-3. Run `nplh link` to link the dotfiles to their proper locations
+3. Run `nplh` to link the dotfiles to their proper locations
 
 </p></details>
 
@@ -21,7 +21,7 @@ bash <(curl nplh.cf/dl)
 1. Make a `~/dotfiles` directory
 2. Move the dotfiles you want to keep to your `~/dotfiles` directory
 3. As you move them, add them to `~/dotfiles/nplh.yml`, as seen in [Configuration](#configuration)
-4. When you're done, run `nplh link` 
+4. When you're done, run `nplh` 
 
 </p></details>
 
@@ -57,15 +57,20 @@ async.zsh: ~/.zfunctions/async
 ## Usage
 
 ```
-COMMANDS:
-     init        setup a dotfiles directory
-     install, i  install a dotfiles repo
-     update, u   update your dotfiles repo
-     link, l     link out the files to their corresponding homes
-     help, h     Shows a list of commands or help for one command
 
-GLOBAL OPTIONS:
-   --help, -h     show help
-   --version, -v  print the version
+  NAME:
+     No Place Like Home - A quick dotfile linker
+
+  USAGE:
+     nplh [options]
+
+  OPTIONS:
+     --directory value, -d value  your dotfiles directory (default: "/home/caleb/dotf
+iles")
+     --help, -h                   show help
+     --version, -v                print the version
+
+  VERSION:
+     0.2.1
 
 ```
