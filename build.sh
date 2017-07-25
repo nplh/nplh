@@ -34,16 +34,16 @@ build() {
   echo $filename
 
   echo "-  compiling"
-  GOOS="$os" GOARCH="$arch" GOARM="$arm" CGO_ENABLED=0 go build -o "$filename"
+  GOOS="$os" GOARCH="$arch" GOARM="$arm" CGO_ENABLED=0 go build
 
   if [ "$os" == "windows" ]; then
     echo "-  zipping"
-    zip -q $filename.zip $filename
+    zip -q $filename.zip nplh
   else
     echo "-  tarring"
-    tar -czf $filename.tgz $filename
+    tar -czf $filename.tgz nplh
   fi
-  rm $filename
+  rm nplh
 }
 
 if [ "$build_release" == true ]; then

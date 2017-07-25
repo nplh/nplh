@@ -6,9 +6,6 @@ cd ~
 nplh_base="$(pwd)/.nplh"
 
 abspath() {
-    # generate absolute path from relative path
-    # $1     : relative filename
-    # return : absolute path
     if [ -d "$1" ]; then
         # dir
         (cd "$1"; pwd)
@@ -65,6 +62,8 @@ download() {
     binary_error="Failed to download ${1}"
     return
   fi
+  
+  cp $1 nplh
 
   chmod +x nplh
 
