@@ -5,6 +5,23 @@ version=0.0.27
 cd ~
 nplh_base="$(pwd)/.nplh"
 
+abspath() {
+    # generate absolute path from relative path
+    # $1     : relative filename
+    # return : absolute path
+    if [ -d "$1" ]; then
+        # dir
+        (cd "$1"; pwd)
+    elif [ -f "$1" ]; then
+        # file
+        if [[ $1 == */* ]]; then
+            echo "$(cd "${1%/*}"; pwd)/${1##*/}"
+        else
+            echo "$(pwd)/$1"
+        fi
+    fi
+}
+
 try_curl() {
   command -v curl > /dev/null &&
   if [[ $1 =~ tgz$ ]]; then
@@ -50,7 +67,11 @@ download() {
   fi
 
   chmod +x nplh
-  sudo ln -s ~/.nplh/bin/nplh /usr/bin/nplh
+
+  if [ "$(readlink /usr/bin/nplh)" != "$(abspath ~/.nplh/bin/nplh)" ]; then
+    echo Linking binary
+    sudo ln -s ~/.nplh/bin/nplh /usr/bin/nplh
+  fi
 }
 
 archi=$(uname -sm)
@@ -73,7 +94,7 @@ esac
 
 cd "$nplh_base"
 if [ -n "$binary_error" ]; then
-  if [ "$binary_available" -eq 0 ]; then
+  if [ $binary_available -eq 0 ]; then
     echo "No prebuilt binary for $archi ..."
   else
     echo "  - $binary_error !!!"
