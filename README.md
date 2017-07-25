@@ -67,8 +67,7 @@ async.zsh: ~/.zfunctions/async
      nplh [options]
 
   OPTIONS:
-     --directory value, -d value  your dotfiles directory (default: "/home/caleb/dotf
-iles")
+     --directory value, -d value  your dotfiles directory (default: "/home/caleb/dotfiles")
      --help, -h                   show help
      --version, -v                print the version
 
