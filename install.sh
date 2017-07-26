@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# <script>window.location = "https://github.com/nplh/nplh"</script>
+# <script>window.location = "https://github.com/nplh/nplh#readme"</script>
 
 version=1.0.0
 
