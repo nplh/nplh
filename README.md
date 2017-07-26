@@ -1,6 +1,7 @@
 # No Place Like Home: a quick dotfile linker
 [![Build Status](https://travis-ci.org/nplh/nplh.svg?branch=master)](https://travis-ci.org/nplh/nplh)
 [![codecov](https://codecov.io/gh/nplh/nplh/branch/master/graph/badge.svg)](https://codecov.io/gh/nplh/nplh)
+[![GitHub release](https://img.shields.io/github/release/nplh/nplh.svg)](https://github.com/nplh/nplh/releases)
 
 ## Installation
 
