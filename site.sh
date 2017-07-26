@@ -4,7 +4,7 @@
 rm -rf build
 mkdir build
 
-version=0.2.1
+version=1.0.0
 
 redirects=""
 

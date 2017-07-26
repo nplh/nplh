@@ -100,7 +100,7 @@ func run(args []string) (err error) {
 	app := cli.NewApp()
 	app.Name = "No Place Like Home"
 	app.Usage = "A quick dotfile linker"
-	app.Version = "0.2.1"
+	app.Version = "1.0.0"
 
 	cli.AppHelpTemplate = `
 	NAME:
