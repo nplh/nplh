@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# <meta http-equiv="refresh" content="0; URL='https://github.com/nplh/nplh'" />
 
 version=1.0.0
 

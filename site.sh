@@ -12,6 +12,7 @@ redirect() {
   echo "$redirects$1  $2" >> build/_redirects
 }
 
+cp install.sh  build/index.html
 cp install.sh  build/dl
 
-redirect / https://github.com/nplh/nplh
+# redirect / https://github.com/nplh/nplh

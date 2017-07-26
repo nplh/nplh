@@ -5,7 +5,7 @@
 ## Installation
 
 ```bash
-bash <(curl nplh.cf/dl)
+bash <(curl nplh.cf)
 ```
 
 ## Setup
