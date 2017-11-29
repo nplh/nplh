@@ -96,7 +96,7 @@ func link(dotfileDirectory string) (err error) {
 	return nil
 }
 
-func main() {
+func run(args []string) error {
 	usr, err := user.Current()
 	if err != nil {
 		fmt.Printf("error: getting current user: %v\n", err)
@@ -135,7 +135,11 @@ func main() {
 		return link(dotfileDirectory)
 	}
 
-	if err := app.Run(os.Args); err != nil {
+	return app.Run(args)
+}
+
+func main() {
+	if err := run(os.Args); err != nil {
 		fmt.Printf("error: running app: %v\n", err)
 	}
 }
