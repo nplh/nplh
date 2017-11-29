@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/urfave/cli"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"os/user"
 	"path/filepath"
 	"strings"
+
+	"github.com/fatih/color"
+	"github.com/urfave/cli"
+	"gopkg.in/yaml.v2"
 )
 
 func warning(msg string, a ...interface{}) {
@@ -95,8 +96,13 @@ func link(dotfileDirectory string) (err error) {
 	return nil
 }
 
-func run(args []string) (err error) {
-	usr, _ := user.Current()
+func run(args []string) error {
+	usr, err := user.Current()
+	if err != nil {
+		fmt.Printf("error: getting current user: %v\n", err)
+		os.Exit(1)
+	}
+
 	app := cli.NewApp()
 	app.Name = "No Place Like Home"
 	app.Usage = "A quick dotfile linker"
@@ -133,5 +139,7 @@ func run(args []string) (err error) {
 }
 
 func main() {
-	run(os.Args)
+	if err := run(os.Args); err != nil {
+		fmt.Printf("error: running app: %v\n", err)
+	}
 }
