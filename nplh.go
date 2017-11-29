@@ -13,15 +13,26 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func warning(msg string, a ...interface{}) {
-	red := color.New(color.FgRed).SprintfFunc()
-	fmt.Println(red("✘ "+msg, a...))
-}
+type messageType int
 
-func done(msg string) {
-	gray := color.New(color.FgHiBlack).SprintfFunc()
-	green := color.New(color.FgGreen).SprintfFunc()
-	fmt.Println(green("✔") + " " + gray(msg))
+const (
+	warning messageType = iota
+	done
+)
+
+var (
+	redSprintf   = color.New(color.FgRed).SprintfFunc()
+	graySprintf  = color.New(color.FgHiBlack).SprintfFunc()
+	greenSprintf = color.New(color.FgGreen).SprintfFunc()
+)
+
+func termPrintf(mt messageType, msg string, a ...interface{}) (n int, err error) {
+	if mt == warning {
+		return fmt.Printf(redSprintf("✘ "+msg, a...))
+	} else if mt == done {
+		return fmt.Printf(greenSprintf("✔") + " " + graySprintf(msg, a...))
+	}
+	return fmt.Printf(msg, a...)
 }
 
 func resolvePath(path string) (newpath string) {
@@ -84,15 +95,15 @@ func link(dotfileDirectory string) (err error) {
 			targetCurrentLink, err := filepath.EvalSymlinks(resolvePath(target))
 			absoluteSource := filepath.Join(dotfileDirectory, line.Source)
 			if err == nil && targetCurrentLink != absoluteSource {
-				warning(target + " already exists, not overriding")
+				termPrintf(warning, target+" already exists, not overriding\n")
 			} else if !fileExists(resolvePath(target)) {
 				os.MkdirAll(filepath.Dir(resolvePath(target)), 0777)
-				done(absoluteSource + " → " + target)
+				termPrintf(done, absoluteSource+" → "+target+"\n")
 				os.Symlink(absoluteSource, resolvePath(target))
 			}
 		}
 	}
-	done("Done linking files")
+	termPrintf(done, "Done linking files\n")
 	return nil
 }
 
