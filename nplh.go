@@ -24,17 +24,22 @@ func done(msg string) {
 	fmt.Println(green("✔") + " " + gray(msg))
 }
 
-func resolvePath(path string) (newpath string) {
-	usr, _ := user.Current()
+func resolvePath(path string) (string, error) {
+	usr, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+
 	dir := usr.HomeDir
 
 	if strings.HasPrefix(path, "~/") {
 		path = filepath.Join(dir, path[2:])
 	}
-	return path
+
+	return path, nil
 }
 
-func fileExists(path string) (exists bool) {
+func fileExists(path string) bool {
 	if _, err := os.Stat(path); err == nil {
 		return true
 	}
@@ -46,13 +51,17 @@ type Symlink struct {
 	Targets []string
 }
 
-func readConfig(path string) (config []Symlink, err error) {
+func readConfig(path string) ([]Symlink, error) {
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
 	m := make(map[string]interface{})
-	yaml.Unmarshal(b, &m)
+
+	if err := yaml.Unmarshal(b, &m); err != nil {
+		return []Symlink{}, err
+	}
+
 	symlinks := []Symlink{}
 	for k, v := range m {
 		targets := []string{}
@@ -81,14 +90,23 @@ func link(dotfileDirectory string) (err error) {
 	}
 	for _, line := range config {
 		for _, target := range line.Targets {
-			targetCurrentLink, err := filepath.EvalSymlinks(resolvePath(target))
+			path, err := resolvePath(target)
+			if err != nil {
+				return err
+			}
+
+			targetCurrentLink, err := filepath.EvalSymlinks(path)
 			absoluteSource := filepath.Join(dotfileDirectory, line.Source)
 			if err == nil && targetCurrentLink != absoluteSource {
 				warning(target + " already exists, not overriding")
-			} else if !fileExists(resolvePath(target)) {
-				os.MkdirAll(filepath.Dir(resolvePath(target)), 0777)
+			} else if !fileExists(path) {
+				if err := os.MkdirAll(filepath.Dir(path), 0777); err != nil {
+					return err
+				}
 				done(absoluteSource + " → " + target)
-				os.Symlink(absoluteSource, resolvePath(target))
+				if err := os.Symlink(absoluteSource, path); err != nil {
+					return err
+				}
 			}
 		}
 	}
