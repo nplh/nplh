@@ -6,7 +6,7 @@
 ## Installation
 
 ```bash
-bash <(curl nplh.cf)
+bash <(curl https://raw.githubusercontent.com/nplh/nplh/master/install.sh)
 ```
 
 ## Setup
